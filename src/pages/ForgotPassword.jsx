@@ -21,8 +21,8 @@ export default function ForgotPassword() {
         try {
             // Calling the custom RPC function created in Supabase
             const { data, error } = await supabase.rpc('reset_user_password', {
-                target_identity: email.trim(), // Can be email or full_name
-                new_password: newPassword
+                user_identity: email.trim(), // Match SQL parameter name
+                new_pass: newPassword        // Match SQL parameter name
             });
 
             if (error) throw error;
