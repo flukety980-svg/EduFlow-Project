@@ -23,15 +23,17 @@ export default function Login() {
             const isEmail = loginEmail.includes('@');
 
             if (!isEmail) {
-                // Try to find email from full_name in profiles table
+                // Try to find email from full_name in profiles table (case-insensitive)
                 const { data, error: profileError } = await supabase
                     .from('profiles')
                     .select('email')
-                    .eq('full_name', loginEmail) // Trimmed input
-                    .single();
+                    .ilike('full_name', loginEmail) // Case-insensitive match
+                    .maybeSingle(); // Use maybeSingle to avoid error if 0 or multiple
 
-                if (profileError || !data?.email) {
-                    throw new Error('ไม่พบผู้ใช้งานนี้ (กรุณาตรวจสอบชื่อหรือใช้อีเมลแทน)');
+                if (profileError) throw new Error('เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้');
+
+                if (!data?.email) {
+                    throw new Error('ไม่พบชื่อผู้ใช้งานนี้ในระบบ (กรุณาตรวจสอบชื่อหรือใช้อีเมลแทน)');
                 }
                 loginEmail = data.email;
             }
