@@ -21,7 +21,7 @@ export default function ForgotPassword() {
         try {
             // Calling the custom RPC function created in Supabase
             const { data, error } = await supabase.rpc('reset_user_password', {
-                target_email: email.trim(),
+                target_identity: email.trim(), // Can be email or full_name
                 new_password: newPassword
             });
 
@@ -34,7 +34,7 @@ export default function ForgotPassword() {
                     navigate('/login');
                 }, 3000);
             } else {
-                throw new Error('ไม่พบอีเมลนี้ในระบบ หรือเกิดข้อผิดพลาดบางอย่าง');
+                throw new Error('ไม่พบอีเมลหรือชื่อผู้ใช้งานนี้ในระบบ');
             }
         } catch (error) {
             let errorMessage = error.message;
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
                     ตั้งค่ารหัสผ่านใหม่ทันที
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
-                    กรอกอีเมลและกำหนดรหัสผ่านใหม่ที่คุณต้องการ
+                    กรอกชื่อหรืออีเมล และกำหนดรหัสผ่านใหม่
                 </p>
             </div>
 
@@ -62,19 +62,18 @@ export default function ForgotPassword() {
                 <form className="space-y-6" onSubmit={handleResetPassword}>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                            อีเมลที่ใช้สมัคร
+                            ชื่อ-นามสกุล หรือ อีเมล
                         </label>
                         <div className="mt-2">
                             <input
                                 id="email"
                                 name="email"
-                                type="email"
-                                autoComplete="email"
+                                type="text"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                placeholder="example@email.com"
+                                placeholder="อีเมล หรือ ชื่อ-นามสกุล"
                             />
                         </div>
                     </div>
